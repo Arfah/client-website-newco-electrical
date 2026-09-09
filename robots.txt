@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://newco-electrical-website-preview-aicl.netlify.app/sitemap.xml
