@@ -61,7 +61,11 @@
 
   /* ---- Scroll spy: highlight the current section in the desktop nav ----- */
   var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
-  var spied = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  var spied = navLinks.map(function (a) {
+    var href = a.getAttribute('href') || '';
+    // Only same-page anchors can be spied; inner pages link back as index.html#section.
+    return href.charAt(0) === '#' && href.length > 1 ? document.getElementById(href.slice(1)) : null;
+  }).filter(Boolean);
   if ('IntersectionObserver' in window && spied.length) {
     var spy = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -108,12 +112,13 @@
   } else {
     var io = new IntersectionObserver(function (entries, observer) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
+        var tallAndOnScreen = entry.boundingClientRect.top < window.innerHeight * 0.6;
+        if (entry.isIntersecting && (entry.intersectionRatio >= 0.15 || tallAndOnScreen)) {
           arrive(entry.target);
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: [0, 0.15] });
     sections.forEach(function (s) { io.observe(s); });
   }
 
