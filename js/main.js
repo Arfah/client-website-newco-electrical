@@ -79,12 +79,13 @@
 
   /* ---- Count-ups ----------------------------------------------------------- */
   var baseDuration = parseFloat(getComputedStyle(root).getPropertyValue('--d-base')) || 600;
-  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  var slowDuration = parseFloat(getComputedStyle(root).getPropertyValue('--d-slow')) || 1200;
+  function easeOut(t) { return 1 - (1 - t) * (1 - t); }
   function countUp(el) {
     var target = parseFloat(el.getAttribute('data-count'));
     var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
     var start = null;
-    var duration = baseDuration * 1.6; // long enough to read, still tied to the token
+    var duration = slowDuration * 2.2; // about 2.6s: slow enough to read the numbers climb
     function frame(ts) {
       if (start === null) start = ts;
       var p = Math.min((ts - start) / duration, 1);
@@ -140,6 +141,14 @@
       }, { passive: true });
     }, 1600);
   }
+
+  /* ---- Logo: back to the top ------------------------------------------------ */
+  document.querySelectorAll('a.wordmark[href="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  });
 
   /* ---- Footer year ---------------------------------------------------------- */
   var year = document.getElementById('year');
