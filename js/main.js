@@ -85,7 +85,7 @@
     var target = parseFloat(el.getAttribute('data-count'));
     var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
     var start = null;
-    var duration = slowDuration * 2.2; // about 2.6s: slow enough to read the numbers climb
+    var duration = slowDuration * 1.5; // about 1.8s: readable without dragging
     function frame(ts) {
       if (start === null) start = ts;
       var p = Math.min((ts - start) / duration, 1);
